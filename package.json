@@ -1,0 +1,22 @@
+{
+  "name": "mme2_u2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gerobader/mme2_u2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gerobader/mme2_u2/issues"
+  },
+  "homepage": "https://github.com/gerobader/mme2_u2#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
