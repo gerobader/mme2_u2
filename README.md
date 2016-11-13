@@ -1,2 +1,2 @@
-# mme2_u2
+# MME 2
 Fancy Multimedia Engineering Project
