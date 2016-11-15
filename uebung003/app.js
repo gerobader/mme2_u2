@@ -78,7 +78,10 @@ app.post('/tweets', function(req,res,next) {
 
 
 app.get('/tweets/:id', function(req,res,next) {
-    res.json(store.select('tweets', req.params.id));
+    var tweet = store.select('tweets', req.params.id);
+    var retweets = store.select('retweets');
+    console.log(retweets);    
+    res.json(tweet);
 });
 
 app.delete('/tweets/:id', function(req,res,next) {
@@ -106,7 +109,9 @@ app.post('/retweets', function(req,res,next) {
 });
 
 app.get('/retweets/:id', function(req,res,next) {
-    res.json(store.select('retweets', req.params.id));
+    var object = store.select('retweets', req.params.id);
+    object.href = "http://localhost:3000/retweets/" + object.id;
+    res.json(object);
 });
 
 app.delete('/retweets/:id', function(req,res,next) {

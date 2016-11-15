@@ -62,6 +62,15 @@ var retweets = [
         user:{
             href: "http://localhost:3000/users/104"
         }
+    },
+    {
+        id: globalCounter(),
+        tweet:{
+            href: "http://localhost:3000/tweets/102"
+        },
+        user:{
+            href: "http://localhost:3000/users/103"
+        }
     }
 ];
 
