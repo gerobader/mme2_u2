@@ -94,6 +94,30 @@ app.put('/tweets/:id', function(req,res,next) {
 
 // TODO: add your routes etc.
 
+app.get('/retweets', function (req, res, next) {
+    res.json(store.select('retweets'));
+});
+
+// CRUD-Operations  ->  test with postman -> post -> body -> raw -> json
+app.post('/retweets', function(req,res,next) {
+    var id = store.insert('retweets', req.body);
+    // set code 201 "created" and send the item back
+    res.status(201).json(store.select('retweets', id));
+});
+
+app.get('/retweets/:id', function(req,res,next) {
+    res.json(store.select('retweets', req.params.id));
+});
+
+app.delete('/retweets/:id', function(req,res,next) {
+    store.remove('retweets', req.params.id);
+    res.status(200).end();
+});
+
+app.put('/retweets/:id', function(req,res,next) {
+    store.replace('retweets', req.params.id, req.body);
+    res.status(200).end();
+});
 
 // CatchAll for the rest (unfound routes/resources) ********
 

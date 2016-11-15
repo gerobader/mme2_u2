@@ -53,10 +53,23 @@ var users = [
     }
 ];
 
+var retweets = [
+    {
+        id: globalCounter(),
+        tweet:{
+            href: "http://localhost:3000/tweets/101"
+        },
+        user:{
+            href: "http://localhost:3000/users/104"
+        }
+    }
+];
+
 // our "in memory database" is a simple object!
 var memory = {};
 memory.tweets = tweets;
 memory.users = users;
+memory.retweets = retweets;
 
 //** private helper functions */
 /**
