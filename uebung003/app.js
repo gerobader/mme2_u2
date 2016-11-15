@@ -80,7 +80,20 @@ app.post('/tweets', function(req,res,next) {
 app.get('/tweets/:id', function(req,res,next) {
     var tweet = store.select('tweets', req.params.id);
     var retweets = store.select('retweets');
-    console.log(retweets);    
+    tweet.retweetids = "";
+    var count = 0;
+    for(var i = 0; i < retweets.length; i++){
+        if(retweets[i].tweetid == req.params.id) {
+            count++;
+            tweet.retweetcount = count;
+            if (tweet.retweetids === "") {
+                tweet.retweetids = retweets[i].id + "";
+            } else {
+            tweet.retweetids = tweet.retweetids + ", " + retweets[i].id;
+        }
+        }
+    }
+    console.log(retweets[0].id);
     res.json(tweet);
 });
 
