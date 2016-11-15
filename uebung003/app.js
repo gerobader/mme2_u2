@@ -4,7 +4,7 @@
  * On each restart the db will be reset (it is only in memory).
  * Best start with GET http://localhost:3000/tweets to see the JSON for it
  *
- * TODO: Start the server and play a little with Postman
+ * TODO: Start the server and play a little with Postman  -> Done
  * TODO: Look at the Routes-section (starting line 68) and start there to add your code 
  * 
  * @author Johannes Konert
