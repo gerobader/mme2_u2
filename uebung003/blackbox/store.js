@@ -56,22 +56,15 @@ var users = [
 var retweets = [
     {
         id: globalCounter(),
-        tweet:{
-            href: "http://localhost:3000/tweets/101"
-        },
-        user:{
-            href: "http://localhost:3000/users/104"
-        }
+        tweetid: 101,
+        userid:104
     },
     {
         id: globalCounter(),
-        tweet:{
-            href: "http://localhost:3000/tweets/102"
-        },
-        user:{
-            href: "http://localhost:3000/users/103"
-        }
+        tweetid: 102,
+        userid: 103        
     }
+
 ];
 
 // our "in memory database" is a simple object!
