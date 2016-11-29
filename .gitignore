@@ -26,6 +26,7 @@ build/Release
 # Dependency directories
 node_modules
 jspm_packages
+uebung004/node_modules
 
 # Optional npm cache directory
 .npm
