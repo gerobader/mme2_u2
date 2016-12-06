@@ -28,33 +28,13 @@ var globalCounter = (function() {
 })();
 
 var videos = [
-    {
-        id: globalCounter(),
-        title: "Interstellar",
-        description:"",
-        src: "",
-        length: 7000,
-        timestamp: Date.now(),
-        playcount: 0,
-        ranking: 0
-
-    },
-    {
-        id: globalCounter(),
-        title: "Arrival",
-        description:"",
-        src: "",
-        length: 6050,
-        timestamp: Date.now(),
-        playcount: 0,
-        ranking: 0
-    }
 
 ];
 
 
 // our "in memory database" is a simple object!
 var memory = {};
+memory.videos = videos;
 // some default store content could be added here
 
 //** private helper functions

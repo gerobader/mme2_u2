@@ -30,58 +30,27 @@ var internalKeys = {id: 'number', timestamp: 'number'};
 
 videos.route('/')
     .get(function(req,res,next) {
-        res.locals.items = store.select('videos');
-        next();
-    });
-
-
-videos.route('/:id')
-    .get(function(req, res, next) {
-        res.json(store.select('videos',req.params.id));
-        next();
-    })
-
-    .put(function(req,res,next) {
-    // TODO
-        var err = undefined;
-        if(req.params.id == req.body.id){
-            if(req.body.title == undefined || req.body.src == undefined || req.body.length == undefined || req.body.length < 0){
-                err = new Error('required parameters are missing dude');
-                res.status(400).json(
-                    {
-                        "error": {
-                            "message": "at least one required parameter not set, required parameters are: title, source, length",
-                            "code" : 400
-                            }
-                    }
-                );
-                next(err);
-            }
-            if(req.body.description == undefined){
-                req.body.description = "";
-            }
-            if(req.body.playcount == undefined || req.body.playcount < 0){
-                req.body.playcount = 0;
-            }
-            if(req.body.ranking == undefined || req.body.ranking < 0){
-                req.body.ranking = 0;
-            }
-
-            store.replace('videos',req.params.id, req.body);
-            res.status(200).json(store.select('videos', req.body));
-            next();
+        var videos = store.select('videos');
+        if(videos == undefined){
+            res.status(204).end();
         } else {
-            err = new Error('can not replace dude');
-            err.status = 400;
-            next(err);
+            res.status(200).locals.items = store.select('videos');
         }
+
     })
 
-    .delete(function(req, res, next) {
-        store.remove('videos', req.params.id);
-        res.status(200).end();
-        next();
+    .put(function (req,res,next) {
+        res.status(405).json(
+            {
+                "error": {
+                    "message": "This action is not allowed on this URL!",
+                    "code" : 405
+                }
+            }
+        );
+
     })
+
     .post(function(req, res, next) {
         var err = undefined;
         if(req.params.id == req.body.id){
@@ -95,7 +64,6 @@ videos.route('/:id')
                         }
                     }
                 );
-                next(err);
             }
             if(req.body.description == undefined){
                 req.body.description = "";
@@ -109,17 +77,76 @@ videos.route('/:id')
 
             var id = store.insert('videos',req.body);
             res.status(201).json(store.select('videos', id));
-            next();
         } else {
             err = new Error('can not insert dude');
             err.status = 400;
-            next(err);
         }
+
 
     });
 
 
+videos.route('/:id')
+    .get(function(req, res, next) {
+        res.json(store.select('videos',req.params.id));
+    })
 
+
+    .put(function(req,res,next) {
+        var err = undefined;
+        if(req.params.id == req.body.id){
+            if(req.body.title == undefined || req.body.src == undefined || req.body.length == undefined || req.body.length < 0){
+                err = new Error('required parameters are missing dude');
+                res.status(400).json(
+                    {
+                        "error": {
+                            "message": "at least one required parameter not set, required parameters are: title, source, length",
+                            "code" : 400
+                            }
+                    }
+                );
+            }
+            if(req.body.description == undefined){
+                req.body.description = "";
+            }
+            if(req.body.playcount == undefined || req.body.playcount < 0){
+                req.body.playcount = 0;
+            }
+            if(req.body.ranking == undefined || req.body.ranking < 0){
+                req.body.ranking = 0;
+            }
+
+            store.replace('videos',req.params.id, req.body);
+            res.status(200).json(store.select('videos', req.body.id));
+        } else {
+            res.status(400).json(
+                {
+                    "error": {
+                        "message": "can not replace dude",
+                        "code" : 400
+                    }
+                }
+            );
+        }
+    })
+
+    .delete(function(req, res, next) {
+        var videos = store.select('videos');
+        for(var i = 0; i < videos.length; i++){
+            if(req.params.id == videos[i].id){
+                store.remove('videos', req.params.id);
+                res.setHeader('Content-Type', 'application/json');
+                res.status(204).end();
+            }else{
+                res.setHeader('Content-Type', 'application/json');
+                res.status(404).end();
+            }
+        }
+    })
+
+    .post(function(req, res, next){
+        res.status(405).end()
+    });
 
 
 

@@ -24,7 +24,7 @@ var videoCorrectMax = cfg.videoCorrectMax;
 var videoIncorrectNumber = cfg.videoIncorrectNumber;
 
 // start of tests ********************************************************************************
-describe.skip('Task 1.b JSON Error data', function() {
+describe('Task 1.b JSON Error data', function() {
     var videoCorrect1Result = null;
     var videoCorrect2Result = null;
     var videoIDsCleanup = [];
@@ -240,7 +240,7 @@ describe.skip('Task 1.b JSON Error data', function() {
         });
     });
     // *******************************************************
-    describe('/videos REST API DELETE', function() {
+    describe.skip('/videos REST API DELETE', function() {
         // good DELETEs
         it('should properly delete and answer with code 204', function(done) {
             request(videoURL)
