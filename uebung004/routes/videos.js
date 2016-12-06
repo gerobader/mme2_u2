@@ -40,112 +40,101 @@ videos.route('/')
     })
 
     .put(function (req,res,next) {
-        res.status(405).json(
-            {
-                "error": {
-                    "message": "This action is not allowed on this URL!",
-                    "code" : 405
-                }
-            }
-        );
-
+        var err = new Error('This action is not allowed on this URL!');
+        err.status = 405;
+        next(err);
     })
 
     .post(function(req, res, next) {
         var err = undefined;
-        if(req.params.id == req.body.id){
-            if(req.body.title == undefined || req.body.src == undefined || req.body.length == undefined || req.body.length < 0){
-                err = new Error('required parameters are missing dude');
-                res.status(400).json(
-                    {
-                        "error": {
-                            "message": "at least one required parameter not set, required parameters are: title, source, length",
-                            "code" : 400
-                        }
-                    }
-                );
-            }
-            if(req.body.description == undefined){
-                req.body.description = "";
-            }
-            if(req.body.playcount == undefined || req.body.playcount < 0){
-                req.body.playcount = 0;
-            }
-            if(req.body.ranking == undefined || req.body.ranking < 0){
-                req.body.ranking = 0;
-            }
-
-            var id = store.insert('videos',req.body);
-            res.status(201).json(store.select('videos', id));
-        } else {
-            err = new Error('can not insert dude');
+        if(req.body.title == undefined || req.body.src == undefined || req.body.length == undefined){
+            err = new Error('Required Parameters are missing (title, src, length)!');
             err.status = 400;
+            next(err);
         }
-
-
+        if(req.body.description == undefined){
+            req.body.description = "";
+        }
+        if(req.body.playcount == undefined){
+            req.body.playcount = 0;
+        }
+        if(req.body.ranking == undefined){
+            req.body.ranking = 0;
+        }
+        if(req.body.playcount < 0 || req.body.ranking < 0 || req.body.length < 0){
+            err = new Error('At least one optional Parameter has an illegal value!');
+            err.status = 400;
+            next(err);
+        }
+        req.body.timestamp = Date.now();
+        var id = store.insert('videos', req.body);
+        res.status(201).json(store.select('videos', id));
     });
 
 
 videos.route('/:id')
     .get(function(req, res, next) {
-        res.json(store.select('videos',req.params.id));
+        var videos = store.select('videos', req.params.id);
+        var err = undefined;
+        if(videos == undefined){
+            err = new Error('There is no Video under this id')
+            err.status = 404;
+            next(err);
+        }
+        res.status(200).json(videos);
     })
-
 
     .put(function(req,res,next) {
         var err = undefined;
         if(req.params.id == req.body.id){
-            if(req.body.title == undefined || req.body.src == undefined || req.body.length == undefined || req.body.length < 0){
-                err = new Error('required parameters are missing dude');
-                res.status(400).json(
-                    {
-                        "error": {
-                            "message": "at least one required parameter not set, required parameters are: title, source, length",
-                            "code" : 400
-                            }
-                    }
-                );
+            if(req.body.title == undefined || req.body.src == undefined || req.body.length == undefined){
+                err = new Error('Required Parameters are missing (title, src, length)!');
+                err.status = 400;
+                next(err);
             }
             if(req.body.description == undefined){
                 req.body.description = "";
             }
-            if(req.body.playcount == undefined || req.body.playcount < 0){
+            if(req.body.playcount == undefined){
                 req.body.playcount = 0;
             }
-            if(req.body.ranking == undefined || req.body.ranking < 0){
+            if(req.body.ranking == undefined){
                 req.body.ranking = 0;
+            }
+            
+            if(req.body.playcount < 0 || req.body.ranking < 0 || req.body.length < 0){
+                err = new Error('At least one optional Parameter has an illegal value (playcount, raking, length)!');
+                err.status = 400;
+                next(err);
             }
 
             store.replace('videos',req.params.id, req.body);
             res.status(200).json(store.select('videos', req.body.id));
         } else {
-            res.status(400).json(
-                {
-                    "error": {
-                        "message": "can not replace dude",
-                        "code" : 400
-                    }
-                }
-            );
+            err = new Error('The URL-ID doesn\'t match the ID given in the Body!');
+            err.status = 400;
+            next(err);
         }
     })
 
     .delete(function(req, res, next) {
-        var videos = store.select('videos');
-        for(var i = 0; i < videos.length; i++){
-            if(req.params.id == videos[i].id){
-                store.remove('videos', req.params.id);
-                res.setHeader('Content-Type', 'application/json');
-                res.status(204).end();
-            }else{
-                res.setHeader('Content-Type', 'application/json');
-                res.status(404).end();
-            }
+        var video = store.select('videos', req.params.id);
+        var err = undefined;
+        if(video == undefined){
+            err = new Error('There is no Video with the ID:' + req.params.id);
+            err.status = 404;
+            next(err);
+        }else{
+            store.remove('videos', req.params.id);
+            res.setHeader('Content-Type', 'application/json');
+            res.status(204).end();
         }
     })
 
     .post(function(req, res, next){
-        res.status(405).end()
+        var err = new Error('This action is not allowed on this URL!');
+        err.status = 405;
+        next(err);
     });
 
 

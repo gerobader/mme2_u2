@@ -240,7 +240,7 @@ describe('Task 1.b JSON Error data', function() {
         });
     });
     // *******************************************************
-    describe.skip('/videos REST API DELETE', function() {
+    describe('/videos REST API DELETE', function() {
         // good DELETEs
         it('should properly delete and answer with code 204', function(done) {
             request(videoURL)
