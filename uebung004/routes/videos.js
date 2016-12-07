@@ -65,10 +65,11 @@ videos.route('/')
             err = new Error('At least one optional Parameter has an illegal value!');
             err.status = 400;
             next(err);
+        } else {
+            req.body.timestamp = Date.now();
+            var id = store.insert('videos', req.body);
+            res.status(201).json(store.select('videos', id));
         }
-        req.body.timestamp = Date.now();
-        var id = store.insert('videos', req.body);
-        res.status(201).json(store.select('videos', id));
     });
 
 
