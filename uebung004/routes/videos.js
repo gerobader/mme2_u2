@@ -31,6 +31,7 @@ var internalKeys = {id: 'number', timestamp: 'number'};
 
 videos.route('/')
     .get(function(req,res,next) {
+        console.log('############################ NEW GET REQUEST WITHOUT ID ##############################');
         var videos = store.select('videos');
         if(videos == undefined){
             res.status(204).end();
@@ -79,6 +80,8 @@ videos.route('/')
 
 videos.route('/:id')
     .get(function(req, res, next) {
+        console.log('############################ NEW GET REQUEST WITH ID ##############################');
+
         var videos = store.select('videos', req.params.id);
         var err = undefined;
         if(videos == undefined){
@@ -90,6 +93,8 @@ videos.route('/:id')
                 if(checkFilter(req.query)){
                     console.log("calling filter");
                     videos = filter.filterQueryFunc(req.query, videos);
+                    console.log('################################## END OF GET #####################################');
+                    console.log('');
                     res.status(200).json(videos);
                 }else{
                     err = new Error('Bad Request: Unknown Filter Attributes');

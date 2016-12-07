@@ -19,9 +19,11 @@ var filter = {
         }
 
         var filteredVideos = [];
-        console.log('-----------FILTER CLASS-------------');
+        console.log('------------------FILTER CLASS------------------');
         console.log('Filtering: ');
+        console.log('');
         console.log(videos);
+        console.log('');
         console.log('by Attributes: ' + query.filter);
 
         // String splitten   Später Abfragen ob alle da
@@ -38,10 +40,15 @@ var filter = {
             for (var i = 0; i < videos.length; i++) {
 
                 var newVideo = {};
+                
                 if (filterArray.includes('title')) {
+                    console.log('-------------------TITLE------------------');
+                    console.log(videos[i].title);
                     newVideo.title = videos[i].title;
                 }
                 if (filterArray.includes('src')) {
+                    console.log('-------------------SOURCE------------------');
+                    console.log(videos[i].src);
                     newVideo.src = videos[i].src;
                 }
                 if (filterArray.includes('description')) {
@@ -65,6 +72,7 @@ var filter = {
 
             }
         }
+        console.log('-------------------RESULT-----------------');
         console.log(filteredVideos);
         return filteredVideos;
     }
