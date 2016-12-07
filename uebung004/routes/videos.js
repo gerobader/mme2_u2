@@ -16,6 +16,7 @@
 var express = require('express');
 var logger = require('debug')('me2u4:videos');
 var store = require('../blackbox/store');
+var filter = require('../filter/filter.js');
 
 var videos = express.Router();
 
@@ -34,6 +35,10 @@ videos.route('/')
         if(videos == undefined){
             res.status(204).end();
         } else {
+            if(req.query != undefined) {
+                console.log("calling filter");
+                videos = filter.filterQueryFunc(req.query, videos);
+            }
             res.status(200).locals.items = store.select('videos');
         }
 

@@ -29,6 +29,47 @@ var globalCounter = (function() {
 
 var videos = [
 
+    {
+       id : globalCounter(),
+        title : "Interstellar",
+        description : "moin",
+        src : "youtube",
+        length : 254,
+        timestamp : 35,
+        playcount : 24,
+        ranking : 35
+    },
+    {
+        id : globalCounter(),
+        title : "Arrival",
+        description : "moin",
+        src : "Zopalast",
+        length : 254,
+        timestamp : 35,
+        playcount : 24,
+        ranking : 35
+    },
+    {
+        id : globalCounter(),
+        title : "Rogue One",
+        description : "moin",
+        src : "IMAX",
+        length : 254,
+        timestamp : 35,
+        playcount : 24,
+        ranking : 35
+    },
+    {
+        id : globalCounter(),
+        title : "Assasins Creed",
+        description : "moin",
+        src : "youtube",
+        length : 254,
+        timestamp : 35,
+        playcount : 24,
+        ranking : 35
+    }
+
 ];
 
 
