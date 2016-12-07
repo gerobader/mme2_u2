@@ -28,7 +28,7 @@ var globalCounter = (function() {
 })();
 
 var videos = [
-    /*
+/*
     {
         id : globalCounter(),
         title : "Interstellar",
@@ -43,7 +43,7 @@ var videos = [
         id : globalCounter(),
         title : "Arrival",
         description : "moin",
-        src : "Zopalast",
+        src : "Zoopalast",
         length : 254,
         timestamp : 35,
         playcount : 24,

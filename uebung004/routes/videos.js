@@ -32,15 +32,25 @@ var internalKeys = {id: 'number', timestamp: 'number'};
 videos.route('/')
     .get(function(req,res,next) {
         console.log('############################ NEW GET REQUEST WITHOUT ID ##############################');
+        var err = undefined;
         var videos = store.select('videos');
         if(videos == undefined){
             res.status(204).end();
         } else {
             if(req.query != undefined) {
-                console.log("calling filter");
-                videos = filter.filterQueryFunc(req.query, videos);
-                res.status(200).json(videos);
+                if(checkFilter(req.query)){
+                    console.log("calling filter");
+                    videos = filter.filterQueryFunc(req.query, videos);
+                    console.log('################################## END OF GET #####################################');
+                    console.log('');
+                    res.status(200).json(videos);
+                }else{
+                    err = new Error('Bad Request: Unknown Filter Attributes');
+                    err.status = 400;
+                    next(err);
+                }
             }
+
         }
     })
 
@@ -81,7 +91,7 @@ videos.route('/')
 videos.route('/:id')
     .get(function(req, res, next) {
         console.log('############################ NEW GET REQUEST WITH ID ##############################');
-
+        console.log(req.query);
         var videos = store.select('videos', req.params.id);
         var err = undefined;
         if(videos == undefined){
@@ -177,8 +187,16 @@ videos.use(function(req, res, next){
 });
 
 function checkFilter(query){
-    String.prototype.contains = function(inp){ return this.indexOf(inp) != -1 };
-    return query.filter.contains('id') || query.filter.contains('title') || query.filter.contains('description') || query.filter.contains('src') || query.filter.contains('length') || query.filter.contains('timestamp') || query.filter.contains('playcount') || query.filter.contains('ranking');
+    var bool = undefined;
+    var filterArray = query.filter.split(',');
+    for(var i = 0; i < filterArray.length; i++){
+        if(filterArray[i] === 'id' || filterArray[i] === 'title' || filterArray[i] === 'description' ||filterArray[i] === 'src' || filterArray[i] === 'length' || filterArray[i] === 'timestamt' || filterArray[i] === 'playcount' || filterArray[i] === 'ranking'){
+            bool = true
+        }else{
+            return false;
+        }
+    }
+    return bool;
 }
 
 module.exports = videos;

@@ -15,7 +15,7 @@ var filter = {
         if(Object.prototype.toString.call(videoArray) === '[object Array]') {
             videos = videoArray;
         } else {
-             videos = [videoArray];
+            videos = [videoArray];
         }
 
         var filteredVideos = [];
@@ -40,7 +40,7 @@ var filter = {
             for (var i = 0; i < videos.length; i++) {
 
                 var newVideo = {};
-                
+
                 if (filterArray.includes('title')) {
                     console.log('-------------------TITLE------------------');
                     console.log(videos[i].title);
