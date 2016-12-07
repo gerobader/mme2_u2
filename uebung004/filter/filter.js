@@ -26,22 +26,53 @@ var filter = {
 
         for(var i = 0; i< videos.length; i++ ){
 
-            if(filterArray.contains('title')){
+            var newVideo = {};
+            if(filterArray.includes('title')){
+                newVideo.title = videos[i].title;
+            }
+            if(filterArray.includes('src')){
+                newVideo.src = videos[i].src;
+            }
+            if(filterArray.includes('description')){
+                newVideo.description = videos[i].description;
+            }
+            if(filterArray.includes('length')){
+                newVideo.length = videos[i].length;
+            }
+            if(filterArray.includes('timestamp')){
+                newVideo.timestamp = videos[i].timestamp;
+            }
+            if(filterArray.includes('playcount')){
+                newVideo.playcount = videos[i].playcount;
+            }
+            if(filterArray.includes('ranking')){
+                newVideo.ranking = videos[i].ranking;
             }
 
+            console.log(newVideo);
+
             filteredVideos[i] = newVideo;
+            newVideo = {};
+
+        }
+
+/*
+        for(var i = offset; i< limit; i++ ){
+
+            new
+
+
 
 
         }
 
+*/
 
 
 
 
 
-
-
-        return filteredVideos;
+            return filteredVideos;
 
 
 
