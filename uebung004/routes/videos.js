@@ -37,7 +37,7 @@ videos.route('/')
         if(videos == undefined){
             res.status(204).end();
         } else {
-            if(req.query != undefined) {
+            if(req.query.filter != undefined) {
                 if(checkFilter(req.query)){
                     console.log("calling filter");
                     videos = filter.filterQueryFunc(req.query, videos);
@@ -49,8 +49,9 @@ videos.route('/')
                     err.status = 400;
                     next(err);
                 }
+            }else{
+                res.status(200).json(videos);
             }
-
         }
     })
 
@@ -91,7 +92,6 @@ videos.route('/')
 videos.route('/:id')
     .get(function(req, res, next) {
         console.log('############################ NEW GET REQUEST WITH ID ##############################');
-        console.log(req.query);
         var videos = store.select('videos', req.params.id);
         var err = undefined;
         if(videos == undefined){
@@ -111,6 +111,8 @@ videos.route('/:id')
                     err.status = 400;
                     next(err);
                 }
+            }else{
+                res.status(200).json(videos);
             }
 
         }
@@ -188,6 +190,8 @@ videos.use(function(req, res, next){
 
 function checkFilter(query){
     var bool = undefined;
+    console.log('checking attributes:');
+    console.log(query.filter);
     var filterArray = query.filter.split(',');
     for(var i = 0; i < filterArray.length; i++){
         if(filterArray[i] === 'id' || filterArray[i] === 'title' || filterArray[i] === 'description' ||filterArray[i] === 'src' || filterArray[i] === 'length' || filterArray[i] === 'timestamt' || filterArray[i] === 'playcount' || filterArray[i] === 'ranking'){
