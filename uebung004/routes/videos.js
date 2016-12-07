@@ -38,8 +38,9 @@ videos.route('/')
             if(req.query != undefined) {
                 console.log("calling filter");
                 videos = filter.filterQueryFunc(req.query, videos);
+                res.status(200).json(videos);
             }
-            res.status(200).locals.items = store.select('videos');
+
         }
 
     })
@@ -86,8 +87,21 @@ videos.route('/:id')
             err = new Error('There is no Video under this id')
             err.status = 404;
             next(err);
+        }else {
+            if(req.query != undefined) {
+                console.log(req.query);
+                if(req.query.contains('id') || req.query.contains('title') || req.query.contains('description') || req.query.contains('src') || req.query.contains('length') || req.query.contains('timestamp') || req.query.contains('playcount') || req.query.contains('ranking')){
+                    console.log("calling filter");
+                    videos = filter.filterQueryFunc(req.query, videos);
+                    res.status(200).json(videos);
+                }else{
+                    err = new Error('Bad Request: Unknown Filter Attributes');
+                    err.status = 400;
+                    next(err);
+                }
+            }
+
         }
-        res.status(200).json(videos);
     })
 
     .put(function(req,res,next) {
