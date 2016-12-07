@@ -40,9 +40,7 @@ videos.route('/')
                 videos = filter.filterQueryFunc(req.query, videos);
                 res.status(200).json(videos);
             }
-
         }
-
     })
 
     .put(function (req,res,next) {
@@ -89,8 +87,7 @@ videos.route('/:id')
             next(err);
         }else {
             if(req.query != undefined) {
-                console.log(req.query);
-                if(req.query.contains('id') || req.query.contains('title') || req.query.contains('description') || req.query.contains('src') || req.query.contains('length') || req.query.contains('timestamp') || req.query.contains('playcount') || req.query.contains('ranking')){
+                if(checkFilter(req.query)){
                     console.log("calling filter");
                     videos = filter.filterQueryFunc(req.query, videos);
                     res.status(200).json(videos);
@@ -173,5 +170,10 @@ videos.use(function(req, res, next){
         res.status(204).end(); // no content;
     }
 });
+
+function checkFilter(query){
+    String.prototype.contains = function(inp){ return this.indexOf(inp) != -1 };
+    return query.filter.contains('id') || query.filter.contains('title') || query.filter.contains('description') || query.filter.contains('src') || query.filter.contains('length') || query.filter.contains('timestamp') || query.filter.contains('playcount') || query.filter.contains('ranking');
+}
 
 module.exports = videos;

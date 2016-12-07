@@ -28,12 +28,9 @@ var globalCounter = (function() {
 })();
 
 var videos = [
-
     /*
-
-
     {
-       id : globalCounter(),
+        id : globalCounter(),
         title : "Interstellar",
         description : "moin",
         src : "youtube",

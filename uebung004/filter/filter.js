@@ -12,29 +12,28 @@ var filter = {
 
         var videos = undefined;
 
-        if(typeof videoArray === "object") {
-             videos = [videoArray];
+        if(Object.prototype.toString.call(videoArray) === '[object Array]') {
+            videos = videoArray;
         } else {
-             videos = videoArray;
+             videos = [videoArray];
         }
 
         var filteredVideos = [];
-        console.log("Filter: " + query.filter);
+        console.log('-----------FILTER CLASS-------------');
+        console.log('Filtering: ');
+        console.log(videos);
+        console.log('by Attributes: ' + query.filter);
 
         // String splitten   Später Abfragen ob alle da
         if(query.filter != undefined ) {
-
 
             var filterArray = query.filter.split(',');
             var offsetArray = query.offset;
             var limit = query.limit;
 
-
-            console.log("Hallo welt");
-            console.log(filterArray);
-
             // Videos um attribute kürzen
-            console.log(Object.keys(videos));
+
+            console.log('Array Keys: ' + Object.keys(videos));
 
             for (var i = 0; i < videos.length; i++) {
 
@@ -61,33 +60,13 @@ var filter = {
                     newVideo.ranking = videos[i].ranking;
                 }
 
-                console.log(newVideo);
-
                 filteredVideos[i] = newVideo;
                 newVideo = {};
 
             }
         }
-/*
-        for(var i = offset; i< limit; i++ ){
-
-            new
-
-
-
-
-        }
-
-*/
-
-
-
-
-
-            return filteredVideos;
-
-
-
+        console.log(filteredVideos);
+        return filteredVideos;
     }
 
 };
