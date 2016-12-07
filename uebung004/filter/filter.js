@@ -26,21 +26,18 @@ var filter = {
 
         for(var i = 0; i< videos.length; i++ ){
 
-            if(filterArray.contains('title')){
+            if(filterArray.indexOf('title') != -1){
+                filteredVideos.title = videos[i].title;
             }
-
-            filteredVideos[i] = newVideo;
-
+            if(filterArray.indexOf('src')!= -1){
+                filteredVideos.src = videos[i].src;
+            }
+            console.log(filteredVideos[i]);
 
         }
+        
 
-
-
-
-
-
-
-
+        console.log(filteredVideos);
         return filteredVideos;
 
 
