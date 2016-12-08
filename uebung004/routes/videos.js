@@ -21,9 +21,9 @@ var filter = require('../filter/filter.js');
 var videos = express.Router();
 
 // if you like, you can use this for task 1.b:
-var requiredKeys = {title: 'string', src: 'string', length: 'number'};
-var optionalKeys = {description: 'string', playcount: 'number', ranking: 'number'};
-var internalKeys = {id: 'number', timestamp: 'number'};
+//var requiredKeys = {title: 'string', src: 'string', length: 'number'};
+//var optionalKeys = {description: 'string', playcount: 'number', ranking: 'number'};
+//var internalKeys = {id: 'number', timestamp: 'number'};
 
 
 // routes **********************
@@ -31,17 +31,30 @@ var internalKeys = {id: 'number', timestamp: 'number'};
 
 videos.route('/')
     .get(function(req,res,next) {
+        console.log('############################ NEW GET REQUEST WITHOUT ID ##############################');
+        var verify = undefined;
+        var err = undefined;
         var videos = store.select('videos');
         if(videos == undefined){
             res.status(204).end();
         } else {
             if(req.query != undefined) {
-                console.log("calling filter");
-                videos = filter.filterQueryFunc(req.query, videos);
+                verify = checkQuery(req.query);
+                if(verify.filter === 'bad' || verify.limit === -1 || verify.offset === -1){
+                    err = new Error('At least one Query Attribute has an illegal value');
+                    err.status = 400;
+                    next(err);
+                }else{
+                    console.log("calling filter");
+                    videos = filter.filterQueryFunc(verify, videos);
+                    console.log('################################## END OF GET #####################################');
+                    console.log('');
+                    res.status(200).json(videos);
+                }
+            }else{
+                res.status(200).json(videos);
             }
-            res.status(200).locals.items = store.select('videos');
         }
-
     })
 
     .put(function (req,res,next) {
@@ -80,14 +93,33 @@ videos.route('/')
 
 videos.route('/:id')
     .get(function(req, res, next) {
+        console.log('############################ NEW GET REQUEST WITH ID ##############################');
         var videos = store.select('videos', req.params.id);
+        var verify = undefined;
         var err = undefined;
         if(videos == undefined){
-            err = new Error('There is no Video under this id')
+            err = new Error('There is no Video with this id');
             err.status = 404;
             next(err);
+        }else {
+            if(req.query.filter != undefined) {
+                verify = checkQuery(req.query);
+                if(verify.filter === 'bad' || verify.limit === -1 || verify.offset === -1){
+                    err = new Error('At least one Query Attribute has an illegal value');
+                    err.status = 400;
+                    next(err);
+                }else{
+                    console.log("calling filter");
+                    videos = filter.filterQueryFunc(verify, videos);
+                    console.log('################################## END OF GET #####################################');
+                    console.log('');
+                    res.status(200).json(videos);
+                }
+            }else{
+                res.status(200).json(videos);
+            }
+
         }
-        res.status(200).json(videos);
     })
 
     .put(function(req,res,next) {
@@ -159,5 +191,71 @@ videos.use(function(req, res, next){
         res.status(204).end(); // no content;
     }
 });
+
+/**
+ * This function checks, if the queryparameters filter, limit and offset have legal values
+ * @param query
+ * @returns {{filter: (*|Array|filterFunc|string|NodeFilter), limit: (*|number|Number), offset: (*|number)}}
+ *          returns an array with legal (or default/break) values for the filter function
+ */
+function checkQuery(query){
+    console.log('--------Query Check-------')
+    var checkedQuery = {
+        filter : undefined,
+        limit : query.limit,
+        offset : query.offset
+    };
+
+    /**
+     * Checks if the filter values are legal
+     */
+    if(query.filter != undefined){
+        var filterArray = query.filter.split(',');
+        var dummyString = undefined;
+        for(var i = 0; i < filterArray.length; i++){
+            if(!(filterArray[i] === 'id' || filterArray[i] === 'title' || filterArray[i] === 'description' ||filterArray[i] === 'src' || filterArray[i] === 'length' || filterArray[i] === 'timestamt' || filterArray[i] === 'playcount' || filterArray[i] === 'ranking')){
+                checkedQuery.filter = 'bad';
+                break;
+            }else{
+                checkedQuery.filter = filterArray;
+            }
+        }
+
+    }
+
+    /**
+     * Checks if the limit values are legal
+     */
+    if(query.limit != undefined){
+        checkedQuery.limit = parseInt(query.limit);
+        if(checkedQuery.limit !== checkedQuery.limit || checkedQuery.limit <= 0){
+            checkedQuery.limit = -1;
+        }
+    }else {
+        console.log('default limit is set');
+        checkedQuery.limit = 25;
+    }
+    
+    if(query.offset != undefined){
+        checkedQuery.offset = parseInt(query.offset);
+        if(checkedQuery.offset !== checkedQuery.offset || checkedQuery.offset < 0 || checkedQuery.offset >= videos.length){
+            checkedQuery.offset = -1;
+        }
+    }else{
+        console.log('default offset is set');
+        checkedQuery.offset = 0;
+    }
+
+    console.log('filter value:');
+    console.log(checkedQuery.filter);
+    console.log('limit is: ' + checkedQuery.limit);
+    console.log('offset is: ' + checkedQuery.offset);
+    console.log('query obj: ');
+    console.log(checkedQuery);
+    console.log('------Query Check done-----');
+    console.log('');
+
+    return checkedQuery;
+}
 
 module.exports = videos;

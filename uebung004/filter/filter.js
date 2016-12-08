@@ -6,76 +6,83 @@
 
 var filter = {
 
-    filterQueryFunc: function(filterString, videoArray) {
+    filterQueryFunc: function(query, videoArray) {
 
-        var query = filterString;
-        var videos = videoArray;
-        var filteredVideos = [];
-
-        // String splitten   Später Abfragen ob alle da
-        var filterArray = query.filter.split(',');
-        var offsetArray = query.offset;
+        var videos = undefined;
+        var offset = query.offset;
         var limit = query.limit;
 
-
-        console.log("Hallo welt");
-        console.log(filterArray);
-
-        // Videos um attribute kürzen
-        console.log( Object.keys(videos));
-
-        for(var i = 0; i< videos.length; i++ ){
-
-            var newVideo = {};
-            if(filterArray.includes('title')){
-                newVideo.title = videos[i].title;
-            }
-            if(filterArray.includes('src')){
-                newVideo.src = videos[i].src;
-            }
-            if(filterArray.includes('description')){
-                newVideo.description = videos[i].description;
-            }
-            if(filterArray.includes('length')){
-                newVideo.length = videos[i].length;
-            }
-            if(filterArray.includes('timestamp')){
-                newVideo.timestamp = videos[i].timestamp;
-            }
-            if(filterArray.includes('playcount')){
-                newVideo.playcount = videos[i].playcount;
-            }
-            if(filterArray.includes('ranking')){
-                newVideo.ranking = videos[i].ranking;
-            }
-
-            console.log(newVideo);
-
-            filteredVideos[i] = newVideo;
-            newVideo = {};
-
+        if(Object.prototype.toString.call(videoArray) === '[object Array]') {
+            videos = videoArray;
+        } else {
+            videos = [videoArray];
         }
 
-/*
-        for(var i = offset; i< limit; i++ ){
+        var filteredVideos = [];
+        console.log('------------------FILTER CLASS------------------');
+        console.log('Filtering: ');
+        console.log('');
+        console.log(videos);
+        console.log('');
+        console.log('by Attributes: ' + query.filter);
+        console.log('limit: ' + query.limit);
+        console.log('offset: ' + query.offset);
 
-            new
+        // String splitten   Später Abfragen ob alle da
+        if(query.filter != undefined ) {
+            // Videos um attribute kürzen
 
+            console.log('Array Keys: ' + Object.keys(videos));
 
+            for (var i = 0; i < videos.length && i < limit; i++) {
+                var fIndex = i + offset;
+                var number = i+1;
+                if(fIndex < videos.length){
+                    var newVideo = {};
+                    if (query.filter.includes('title')) {
+                        console.log('-------------------' + number +'. TITLE------------------');
+                        console.log(videos[fIndex].title);
+                        newVideo.title = videos[fIndex].title;
+                    }
+                    if (query.filter.includes('src')) {
+                        console.log('-------------------' + number + '. SOURCE------------------');
+                        console.log(videos[fIndex].src);
+                        newVideo.src = videos[fIndex].src;
+                    }
+                    if (query.filter.includes('description')) {
+                        newVideo.description = videos[fIndex].description;
+                    }
+                    if (query.filter.includes('length')) {
+                        newVideo.length = videos[fIndex].length;
+                    }
+                    if (query.filter.includes('timestamp')) {
+                        newVideo.timestamp = videos[fIndex].timestamp;
+                    }
+                    if (query.filter.includes('playcount')) {
+                        newVideo.playcount = videos[fIndex].playcount;
+                    }
+                    if (query.filter.includes('ranking')) {
+                        newVideo.ranking = videos[fIndex].ranking;
+                    }
+                    filteredVideos[i] = newVideo;
+                    newVideo = {};
+                }
+            }
+        }else{
+            for(var j = 0; j < videos.length && j < limit; j++){
+                var index = j + offset;
 
-
+                if(index < videos.length){
+                    var newVideo2 = {};
+                    newVideo2 = videos[index];
+                    filteredVideos[j] = newVideo2;
+                }
+            }
         }
 
-*/
-
-
-
-
-
-            return filteredVideos;
-
-
-
+        console.log('-------------------RESULT-----------------');
+        console.log(filteredVideos);
+        return filteredVideos;
     }
 
 };
