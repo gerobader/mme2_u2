@@ -53,7 +53,7 @@ videos.route('/')
                     console.log('################################## END OF GET #####################################');
                     console.log('');
                     if(result.emptyCheck == true){
-                        err = new Error('Gibt keine Videos..');
+                        err = new Error('No video with given parameters found');
                         err.status = 400;
                         next(err);
                     }else {
