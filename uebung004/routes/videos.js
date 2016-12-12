@@ -52,7 +52,7 @@ videos.route('/')
                     var result = filter.filterQueryFunc(verify, videos);
                     console.log('################################## END OF GET #####################################');
                     console.log('');
-                    if(result.emptyCheck == false){
+                    if(result.emptyCheck == true){
                         err = new Error('Gibt keine Videos..');
                         err.status = 400;
                         next(err);
