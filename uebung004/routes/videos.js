@@ -54,7 +54,7 @@ videos.route('/')
                     console.log('');
                     if(result.emptyCheck == true){
                         err = new Error('No video with given parameters found');
-                        err.status = 400;
+                        err.status = 404;
                         next(err);
                     }else {
                         res.status(200).json(result.videos);
