@@ -49,10 +49,16 @@ videos.route('/')
                     next(err);
                 }else{
                     console.log("calling filter");
-                    videos = filter.filterQueryFunc(verify, videos);
+                    var result = filter.filterQueryFunc(verify, videos);
                     console.log('################################## END OF GET #####################################');
                     console.log('');
-                    res.status(200).json(videos);
+                    if(result.emptyCheck == false){
+                        err = new Error('Gibt keine Videos..');
+                        err.status = 400;
+                        next(err);
+                    }else {
+                        res.status(200).json(result.videos);
+                    }
                 }
             }else{
                 res.status(200).json(videos);

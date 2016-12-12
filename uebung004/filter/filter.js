@@ -108,12 +108,19 @@ var filter = {
             }
         }
 
+        var result = {
+            videos: filteredVideos,
+                emptyCheck : false
+        }
 
+        if(filteredVideos.length == 0){
+            result.emptyCheck = true;
+        }
 
 
         console.log('-------------------RESULT-----------------');
-        console.log(filteredVideos);
-        return filteredVideos;
+        console.log(result);
+        return result;
     }
 
 };
