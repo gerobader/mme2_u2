@@ -35,6 +35,8 @@ videos.route('/')
         var verify = undefined;
         var err = undefined;
         var videos = store.select('videos');
+        console.log('--------------Hier ist das video Objekt------------------');
+        console.log(videos);
         if(videos == undefined){
             res.status(204).end();
         } else {

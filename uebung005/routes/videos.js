@@ -16,7 +16,7 @@
 var express = require('express');
 var logger = require('debug')('me2u4:videos');
 var mongoose = require('mongoose');
-var VideoModel = require('../models/videos.js');
+var VideoModel = require('../models/videos');
 var filter = require('../filter/filter.js');
 
 var videos = express.Router();
@@ -35,38 +35,41 @@ videos.route('/')
         console.log('############################ NEW GET REQUEST WITHOUT ID ##############################');
         var verify = undefined;
         var err = undefined;
-        var videos = VideoModel.find({}, function(err, items) {
-                          res.json(items);
-                      });
-        if(videos == undefined){
-            res.status(204).end();
-        } else {
-            if(req.query != undefined) {
-                console.log("QUERY LENGTH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                console.log(Object.keys(req.query).length);
-                console.log("QUERY LENGTH _______________________________");
-                verify = checkQuery(req.query);
-                if(verify.filter === 'bad' || verify.limit === -1 || verify.offset === -1 || verify.checkAttributes === false){
-                    err = new Error('At least one Query Attribute has an illegal value');
-                    err.status = 400;
-                    next(err);
-                }else{
-                    console.log("calling filter");
-                    var result = filter.filterQueryFunc(verify, videos);
-                    console.log('################################## END OF GET #####################################');
-                    console.log('');
-                    if(result.emptyCheck == true){
-                        err = new Error('No video with given parameters found');
-                        err.status = 404;
+        var videos = undefined;
+        VideoModel.find().exec(function(err, animals){
+            videos = animals;
+            console.log('--------Hier ist das videos Objekt------------');
+            console.log(videos);
+            if(videos == undefined){
+                res.status(204).end();
+            } else {
+                if(req.query != undefined) {
+                    console.log("QUERY LENGTH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    console.log(Object.keys(req.query).length);
+                    console.log("QUERY LENGTH _______________________________");
+                    verify = checkQuery(req.query);
+                    if(verify.filter === 'bad' || verify.limit === -1 || verify.offset === -1 || verify.checkAttributes === false){
+                        err = new Error('At least one Query Attribute has an illegal value');
+                        err.status = 400;
                         next(err);
-                    }else {
-                        res.status(200).json(result.videos);
+                    }else{
+                        console.log("calling filter");
+                        var result = filter.filterQueryFunc(verify, videos);
+                        console.log('################################## END OF GET #####################################');
+                        console.log('');
+                        if(result.emptyCheck == true){
+                            err = new Error('No video with given parameters found');
+                            err.status = 404;
+                            next(err);
+                        }else {
+                            res.status(200).json(result.videos);
+                        }
                     }
+                }else{
+                    res.status(200).json(videos);
                 }
-            }else{
-                res.status(200).json(videos);
             }
-        }
+        });
     })
 
     .put(function (req,res,next) {
