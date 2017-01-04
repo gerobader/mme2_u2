@@ -89,7 +89,7 @@ videos.route('/')
             req.body.ranking = 0;
         }
         if(req.body.playcount < 0 || req.body.ranking < 0 || req.body.length < 0){
-            err = new Error('At  least one optional Parameter has an illegal value!');
+            err = new Error('At least one optional Parameter has an illegal value!');
             err.status = 400;
             next(err);
         } else {
