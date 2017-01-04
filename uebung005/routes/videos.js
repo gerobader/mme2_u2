@@ -16,8 +16,7 @@
 var express = require('express');
 var logger = require('debug')('me2u4:videos');
 var mongoose = require('mongoose');
-var db = mongoose.connect('mongodb://localhost:27017/me2');
-var VideoModel = require('.models/videos');
+var VideoModel = require('../models/videos.js');
 var filter = require('../filter/filter.js');
 
 var videos = express.Router();
