@@ -119,10 +119,10 @@ videos.route('/:id')
                     next(err);
                 }else{
                     console.log("calling filter");
-                    videos = filter.filterQueryFunc(verify, videos);
+                    var result = filter.filterQueryFunc(verify, videos);
                     console.log('################################## END OF GET #####################################');
                     console.log('');
-                    res.status(200).json(videos);
+                    res.status(200).json(result.videos);
                 }
             }else{
                 res.status(200).json(videos);
@@ -213,7 +213,7 @@ function checkQuery(query){
         filter : undefined,
         limit : query.limit,
         offset : query.offset,
-        numberOfQuerys : Object.keys(query).length,
+        queryChecksum : Object.keys(query).length,
         numberOfSpecialQuerys : 0,  // like offset, limit, filter
         // keywords we need in filter class to search
         keywords : {
@@ -282,46 +282,46 @@ function checkQuery(query){
 
     if(query.id != undefined){
         checkedQuery.keywords.id = query.id;
-        checkedQuery.numberOfQuerys -= 1;
+        checkedQuery.queryChecksum -= 1;
     }
     if(query.title != undefined){
         checkedQuery.keywords.title = query.title;
-        checkedQuery.numberOfQuerys -= 1;
+        checkedQuery.queryChecksum -= 1;
     }
     if(query.description != undefined){
         checkedQuery.keywords.description = query.description;
-        checkedQuery.numberOfQuerys -= 1;
+        checkedQuery.queryChecksum -= 1;
     }
     if(query.src != undefined){
         checkedQuery.keywords.src = query.src;
-        checkedQuery.numberOfQuerys -= 1;
+        checkedQuery.queryChecksum -= 1;
     }
     if(query.length != undefined){
         checkedQuery.keywords.length = query.length;
-        checkedQuery.numberOfQuerys -= 1;
+        checkedQuery.queryChecksum -= 1;
     }
     if(query.timestamp != undefined){
         checkedQuery.keywords.timestamp = query.timestamp;
-        checkedQuery.numberOfQuerys -= 1;
+        checkedQuery.queryChecksum -= 1;
     }
     if(query.playcount != undefined){
         checkedQuery.keywords.playcount = query.playcount;
-        checkedQuery.numberOfQuerys -= 1;
+        checkedQuery.queryChecksum -= 1;
     }
     if(query.ranking != undefined){
         checkedQuery.keywords.ranking = query.ranking;
-        checkedQuery.numberOfQuerys -= 1;
+        checkedQuery.queryChecksum -= 1;
     }
 
     /* Check if there are any non allowed attributes
      * There are only 8 possible video Parameters and 3 extra Parameters (filter,offset,limit)
      *
      */
-    if( (checkedQuery.numberOfQuerys-checkedQuery.numberOfSpecialQuerys) > 0 ){
+    if( (checkedQuery.queryChecksum - checkedQuery.numberOfSpecialQuerys) > 0 ){
         checkedQuery.checkAttributes = false;
         console.log("Ungültige Parameter im Query!");
         console.log((checkedQuery.numberOfSpecialQuerys));
-        console.log((checkedQuery.numberOfQuerys-checkedQuery.numberOfSpecialQuerys));
+        console.log((checkedQuery.queryChecksum-checkedQuery.numberOfSpecialQuerys));
         console.log("___________________________________");
 
         // Need this for the case that there are keywords but no filter

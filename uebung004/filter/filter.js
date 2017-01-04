@@ -40,9 +40,9 @@ var filter = {
             console.log("Searching Keywords");
             console.log(keywords.ranking);
 
-            for (var i = 0; i < videos.length && i < limit; i++) {
-                if (videos[i].id == keywords.id || videos[i].title == keywords.title || videos[i].description == keywords.description || videos[i].src == keywords.src || videos[i].length == keywords.length || videos[i].timestamp == keywords.timestamp || videos[i].playcount == keywords.playcount || videos[i].ranking == keywords.ranking) {
-                    searchedVideos.push(videos[i]);
+            for (var k = 0; k < videos.length && k < limit; k++) {
+                if (videos[k].id == keywords.id || videos[k].title == keywords.title || videos[k].description == keywords.description || videos[k].src == keywords.src || videos[k].length == keywords.length || videos[k].timestamp == keywords.timestamp || videos[k].playcount == keywords.playcount || videos[k].ranking == keywords.ranking) {
+                    searchedVideos.push(videos[k]);
                     console.log("found video");
                 }
                 console.log("searching..");
