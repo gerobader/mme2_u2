@@ -16,9 +16,8 @@
 var express = require('express');
 var logger = require('debug')('me2u4:videos');
 var mongoose = require('mongoose');
-var VideoModel = require('../models/videos.js');
+var VideoModel = require('../models/videos');
 var filter = require('../filter/filter.js');
-
 var videos = express.Router();
 
 // if you like, you can use this for task 1.b:
@@ -35,8 +34,8 @@ videos.route('/')
         console.log('############################ NEW GET REQUEST WITHOUT ID ##############################');
         var verify = undefined;
         var err = undefined;
-        var videos = VideoModel.find({}, function(err, items) {
-                          res.json(items);
+        VideoModel.find({}, function(err, items) {
+            videos = items;
                       });
         if(videos == undefined){
             res.status(204).end();
