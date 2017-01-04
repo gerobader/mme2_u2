@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var VideoSchema = new Schema({
+var VideoModel = new Schema({
+
     title: {type: String, required: true},
     description: {type: String, default: ''},
     src: {type: String, required: true},
@@ -9,8 +10,10 @@ var VideoSchema = new Schema({
     playcount: {type: Number, default: 0},
     ranking: {type: Number, default: 0}
     }, {
-    timestamp: {type: String, createdAt: 'timestamp'},
+    timestamps: {type: String, createdAt: 'timestamp'},
     id: {type: Number, createdAt: 'id'}
 });
 
-module.exports = mongoose.model('Video', VideoSchema);
+var Video = mongoose.model('Video', VideoModel);
+
+module.exports = Video;

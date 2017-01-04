@@ -22,6 +22,9 @@ var debug = require('debug')('me2u4:server');
 
 // own modules
 var filter = require('./filter/filter.js');
+var mongoose = require('mongoose');
+var db = mongoose.connect('mongodb://localhost:27017/me2');
+var VideoModel = require('./models/videos.js');
 var restAPIchecks = require('./restapi/request-checks.js');
 var videos = require('./routes/videos');
 

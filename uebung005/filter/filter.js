@@ -111,7 +111,7 @@ var filter = {
         var result = {
             videos: filteredVideos,
                 emptyCheck : false
-        }
+        };
 
         if(filteredVideos.length == 0){
             result.emptyCheck = true;

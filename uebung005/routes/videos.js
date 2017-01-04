@@ -16,9 +16,7 @@
 var express = require('express');
 var logger = require('debug')('me2u4:videos');
 var mongoose = require('mongoose');
-var db = mongoose.connect('mongodb://localhost:27017/me2');
-var VideoModel = require('../models/video');
-//var store = require('../blackbox/store');
+var VideoModel = require('../models/videos.js');
 var filter = require('../filter/filter.js');
 
 var videos = express.Router();
@@ -37,12 +35,9 @@ videos.route('/')
         console.log('############################ NEW GET REQUEST WITHOUT ID ##############################');
         var verify = undefined;
         var err = undefined;
-        //var videos = store.select('videos');
-        var videos = VideoModel.find({}, function(err, items){
-            res.json(items);
-        });
-
-
+        var videos = VideoModel.find({}, function(err, items) {
+                          res.json(items);
+                      });
         if(videos == undefined){
             res.status(204).end();
         } else {
@@ -97,13 +92,19 @@ videos.route('/')
             req.body.ranking = 0;
         }
         if(req.body.playcount < 0 || req.body.ranking < 0 || req.body.length < 0){
-            err = new Error('At  least one optional Parameter has an illegal value!');
+            err = new Error('At least one optional Parameter has an illegal value!');
             err.status = 400;
             next(err);
         } else {
             req.body.timestamp = Date.now();
-            var id = store.insert('videos', req.body);
-            res.status(201).json(store.select('videos', id));
+            var video = new VideoModel(req.body);
+            video.save(function(err) {
+               if(!err){
+                   res.status(201).json(video);
+               } else {
+                   next(err);
+               }
+            });
         }
     });
 
@@ -111,7 +112,9 @@ videos.route('/')
 videos.route('/:id')
     .get(function(req, res, next) {
         console.log('############################ NEW GET REQUEST WITH ID ##############################');
-        var videos = store.select('videos', req.params.id);
+        var videos = VideoModel.find({}, function(err, items) {
+            res.json(items);
+        });
         var verify = undefined;
         var err = undefined;
         if(videos == undefined){
@@ -162,9 +165,13 @@ videos.route('/:id')
                 err.status = 400;
                 next(err);
             }
-
-            store.replace('videos',req.params.id, req.body);
-            res.status(200).json(store.select('videos', req.body.id));
+            VideoModel.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, item){
+                if(!err) {
+                   res.status(201).json(item);
+                } else {
+                    next(err);
+                }
+            });
         } else {
             err = new Error('The URL-ID doesn\'t match the ID given in the Body!');
             err.status = 400;
@@ -173,16 +180,23 @@ videos.route('/:id')
     })
 
     .delete(function(req, res, next) {
-        var video = store.select('videos', req.params.id);
+        var videos = VideoModel.find({}, function(err, items) {
+            res.json(items);
+        });
         var err = undefined;
-        if(video == undefined){
+        if(videos == undefined){
             err = new Error('There is no Video with the ID:' + req.params.id);
             err.status = 404;
             next(err);
         }else{
-            store.remove('videos', req.params.id);
-            res.setHeader('Content-Type', 'application/json');
-            res.status(204).end();
+            VideoModel.findByIdAndRemove(req.params.id, function(err,item){
+                if(!err){
+                    res.setHeader('Content-Type', 'application/json');
+                    res.status(204).end();
+                } else {
+                    next(err);
+                }
+            });
         }
     })
 
