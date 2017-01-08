@@ -35,6 +35,8 @@ videos.route('/')
         var verify = undefined;
         var err = undefined;
         var videos = store.select('videos');
+        console.log('--------------Hier ist das video Objekt------------------');
+        console.log(videos);
         if(videos == undefined){
             res.status(204).end();
         } else {
@@ -89,7 +91,7 @@ videos.route('/')
             req.body.ranking = 0;
         }
         if(req.body.playcount < 0 || req.body.ranking < 0 || req.body.length < 0){
-            err = new Error('At least one optional Parameter has an illegal value!');
+            err = new Error('At  least one optional Parameter has an illegal value!');
             err.status = 400;
             next(err);
         } else {

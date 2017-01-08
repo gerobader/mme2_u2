@@ -18,6 +18,7 @@ var logger = require('debug')('me2u4:videos');
 var mongoose = require('mongoose');
 var VideoModel = require('../models/videos');
 var filter = require('../filter/filter.js');
+
 var videos = express.Router();
 
 // if you like, you can use this for task 1.b:
@@ -33,39 +34,40 @@ videos.route('/')
     .get(function(req,res,next) {
         console.log('############################ NEW GET REQUEST WITHOUT ID ##############################');
         var verify = undefined;
-        var err = undefined;
-        VideoModel.find({}, function(err, items) {
+        var error = undefined;
+        var videos = undefined;
+        VideoModel.find().exec(function(err, items){
             videos = items;
-                      });
-        if(videos == undefined){
-            res.status(204).end();
-        } else {
-            if(req.query != undefined) {
-                console.log("QUERY LENGTH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                console.log(Object.keys(req.query).length);
-                console.log("QUERY LENGTH _______________________________");
-                verify = checkQuery(req.query);
-                if(verify.filter === 'bad' || verify.limit === -1 || verify.offset === -1 || verify.checkAttributes === false){
-                    err = new Error('At least one Query Attribute has an illegal value');
-                    err.status = 400;
-                    next(err);
-                }else{
-                    console.log("calling filter");
-                    var result = filter.filterQueryFunc(verify, videos);
-                    console.log('################################## END OF GET #####################################');
-                    console.log('');
-                    if(result.emptyCheck == true){
-                        err = new Error('No video with given parameters found');
-                        err.status = 404;
-                        next(err);
-                    }else {
-                        res.status(200).json(result.videos);
+            if(videos == undefined){
+                res.status(204).end();
+            } else {
+                if(req.query != undefined) {
+                    console.log("QUERY LENGTH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    console.log(Object.keys(req.query).length);
+                    console.log("QUERY LENGTH _______________________________");
+                    verify = checkQuery(req.query);
+                    if(verify.filter === 'bad' || verify.limit === -1 || verify.offset === -1 || verify.checkAttributes === false){
+                        error = new Error('At least one Query Attribute has an illegal value');
+                        error.status = 400;
+                        next(error);
+                    }else{
+                        console.log("calling filter");
+                        var result = filter.filterQueryFunc(verify, videos);
+                        console.log('################################## END OF GET #####################################');
+                        console.log('');
+                        if(result.emptyCheck == true){
+                            error = new Error('No video with given parameters found');
+                            error.status = 404;
+                            next(error);
+                        }else {
+                            res.status(200).json(result.videos);
+                        }
                     }
+                }else{
+                    res.status(200).json(videos);
                 }
-            }else{
-                res.status(200).json(videos);
             }
-        }
+        });
     })
 
     .put(function (req,res,next) {
@@ -75,128 +77,103 @@ videos.route('/')
     })
 
     .post(function(req, res, next) {
-        var err = undefined;
-        if(req.body.title == undefined || req.body.src == undefined || req.body.length == undefined){
-            err = new Error('Required Parameters are missing (title, src, length)!');
-            err.status = 400;
-            next(err);
-        }
-        if(req.body.description == undefined){
-            req.body.description = "";
-        }
-        if(req.body.playcount == undefined){
-            req.body.playcount = 0;
-        }
-        if(req.body.ranking == undefined){
-            req.body.ranking = 0;
-        }
-        if(req.body.playcount < 0 || req.body.ranking < 0 || req.body.length < 0){
-            err = new Error('At least one optional Parameter has an illegal value!');
-            err.status = 400;
-            next(err);
-        } else {
-            req.body.timestamp = Date.now();
-            var video = new VideoModel(req.body);
-            video.save(function(err) {
-               if(!err){
-                   res.status(201).json(video);
-               } else {
-                   next(err);
-               }
-            });
-        }
+        var error = undefined;
+        req.body.timestamp = Date.now();
+        var video = new VideoModel(req.body);
+        video.save(function(err) {
+           if(!err){
+               res.status(201).json(video);
+           } else {
+               error = new Error('Video validation failed. Check the video parameters');
+               error.status = 400;
+               next(error);
+           }
+        });
     });
 
 
 videos.route('/:id')
     .get(function(req, res, next) {
-        console.log('############################ NEW GET REQUEST WITH ID ##############################');
-        var videos = VideoModel.find({}, function(err, items) {
-            res.json(items);
-        });
         var verify = undefined;
-        var err = undefined;
-        if(videos == undefined){
-            err = new Error('There is no Video with this id');
-            err.status = 404;
-            next(err);
-        }else {
-            if(req.query.filter != undefined) {
-                verify = checkQuery(req.query);
-                if(verify.filter === 'bad' || verify.limit === -1 || verify.offset === -1){
-                    err = new Error('At least one Query Attribute has an illegal value');
-                    err.status = 400;
-                    next(err);
+        var error = undefined;
+        var videos = undefined;
+        VideoModel.findById(req.params.id, function(err, items){
+            videos = items;
+            if(!videos){
+                error = new Error('There is no Video with the given id');
+                error.status = 404;
+                next(error);
+            }else {
+                if(req.query.filter != undefined) {
+                    verify = checkQuery(req.query);
+                    if(verify.filter === 'bad' || verify.limit === -1 || verify.offset === -1){
+                        err = new Error('At least one Query Attribute has an illegal value');
+                        err.status = 400;
+                        next(err);
+                    }else{
+                        var result = filter.filterQueryFunc(verify, videos);
+                        res.status(200).json(result.videos[0]);
+                    }
                 }else{
-                    console.log("calling filter");
-                    var result = filter.filterQueryFunc(verify, videos);
-                    console.log('################################## END OF GET #####################################');
-                    console.log('');
-                    res.status(200).json(result.videos[0]);
+                    res.status(200).json(videos);
                 }
-            }else{
-                res.status(200).json(videos);
             }
-
-        }
+        });
     })
-
+    //TODO: find a way to check if the inputs are valid with the VideoModel || use findByIdAndUpdate
     .put(function(req,res,next) {
-        var err = undefined;
+        var error = undefined;
         if(req.params.id == req.body.id){
-            if(req.body.title == undefined || req.body.src == undefined || req.body.length == undefined){
-                err = new Error('Required Parameters are missing (title, src, length)!');
-                err.status = 400;
-                next(err);
-            }
-            if(req.body.description == undefined){
-                req.body.description = "";
-            }
-            if(req.body.playcount == undefined){
-                req.body.playcount = 0;
-            }
-            if(req.body.ranking == undefined){
-                req.body.ranking = 0;
-            }
-            
-            if(req.body.playcount < 0 || req.body.ranking < 0 || req.body.length < 0){
-                err = new Error('At least one optional Parameter has an illegal value (playcount, raking, length)!');
-                err.status = 400;
-                next(err);
-            }
-            VideoModel.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, item){
-                if(!err) {
-                   res.status(201).json(item);
+            /*VideoModel.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, item){
+                if(err){
+                    error = new Error('Unknown Error :P');
+                    error.status = 500;
+                    next(error);
                 } else {
-                    next(err);
+                   res.status(201).send(item);
                 }
-            });
-        } else {
-            err = new Error('The URL-ID doesn\'t match the ID given in the Body!');
-            err.status = 400;
-            next(err);
+            });*/
+            VideoModel.findById(req.params.id, function(err, item){
+                if(err){
+                    res.status(500).send(err);
+                }else{
+                    item.title = req.body.title || item.title;
+                    item.src = req.body.src || item.src;
+                    item.length = req.body.length || item.length;
+                    item.ranking = req.body.ranking || item.ranking;
+                    item.playcount = req.body.playcount || item.playcount;
+                    item.description = req.body.description || item.description;
+
+                    item.save(function(err){
+                        if(!err) {
+                            res.status(201).json(item);
+                        }else{
+                            error = new Error('Video validation failed. Check the video parameters.');
+                            error.status = 400;
+                            next(error);
+                        }
+                    })
+                }
+            })
+        }else{
+            error = new Error('The IDs in the URL and the body dont match up');
+            error.status = 400;
+            next(error);
         }
+
     })
 
     .delete(function(req, res, next) {
-        var videos = VideoModel.find({}, function(err, items) {
-            res.json(items);
+        var error = undefined;
+        VideoModel.findByIdAndRemove(req.params.id, function(err, item){
+            if(err){
+                error = new Error('There is no Video with the ID:' + req.params.id);
+                error.status = 404;
+                next(error);
+            }else{
+                res.status(204).end();
+            }
         });
-        var err = undefined;
-        if(videos == undefined){
-            err = new Error('There is no Video with the ID:' + req.params.id);
-            err.status = 404;
-            next(err);
-        }else{
-            VideoModel.findByIdAndRemove(req.params.id, function(err,item){
-                if(!err){
-                    res.setHeader('Content-Type', 'application/json');
-                    res.status(204).end();
-                } else {
-                    next(err);
-                }
-            });
-        }
     })
 
     .post(function(req, res, next){
