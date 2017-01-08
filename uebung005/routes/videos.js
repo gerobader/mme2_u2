@@ -163,6 +163,27 @@ videos.route('/:id')
 
     })
 
+    .patch(function(req,res,next) {
+        var error = undefined;
+        if (! req.body.id || req.body.id === req.params.id) {
+            console.log("req id und body id stimmen überein, gut gemacht Dude!");
+            VideoModel.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, item){
+                    if (!err) {
+                        res.status(200).json(item);
+                    } else {
+                        error = new Error('Video validation failed. Check the video parameters bro.');
+                        error.status = 400;
+                        next(error);
+                    }
+                    next();
+                });
+            } else {
+            error = new Error('id dont equals id from body dude');
+            error.status = 400;
+            next(error);
+            }
+    })
+
     .delete(function(req, res, next) {
         var error = undefined;
         VideoModel.findByIdAndRemove(req.params.id, function(err, item){
