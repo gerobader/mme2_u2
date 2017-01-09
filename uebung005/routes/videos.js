@@ -32,29 +32,34 @@ var videos = express.Router();
 
 videos.route('/')
     .get(function(req,res,next) {
-        console.log('############################ NEW GET REQUEST WITHOUT ID ##############################');
         var verify = undefined;
         var error = undefined;
         var videos = undefined;
-        VideoModel.find().exec(function(err, items){
+        var filterArray = undefined;
+        var filters = undefined;
+        if(req.query.filter){
+            filterArray = req.query.filter.split(',');
+            for(var i = 0; i < filterArray.length; i++){
+                if(filters === undefined){
+                    filters = filterArray[i];
+                }else{
+                    filters += ' ' + filterArray[i];
+                }
+            }
+        }
+        VideoModel.find({}, filters, function(err, items){
             videos = items;
             if(videos == undefined){
                 res.status(204).end();
             } else {
                 if(req.query != undefined) {
-                    console.log("QUERY LENGTH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    console.log(Object.keys(req.query).length);
-                    console.log("QUERY LENGTH _______________________________");
                     verify = checkQuery(req.query);
                     if(verify.filter === 'bad' || verify.limit === -1 || verify.offset === -1 || verify.checkAttributes === false){
-                        error = new Error('At least one Query Attribute has an illegal value');
+                        error = new Error('At least one Query Attribute has an illegal value. Check the filter');
                         error.status = 400;
                         next(error);
                     }else{
-                        console.log("calling filter");
                         var result = filter.filterQueryFunc(verify, videos);
-                        console.log('################################## END OF GET #####################################');
-                        console.log('');
                         if(result.emptyCheck == true){
                             error = new Error('No video with given parameters found');
                             error.status = 404;
@@ -97,7 +102,20 @@ videos.route('/:id')
         var verify = undefined;
         var error = undefined;
         var videos = undefined;
-        VideoModel.findById(req.params.id, function(err, items){
+        var filterArray = undefined;
+        var filters = undefined;
+        if(req.query.filter){
+            filterArray = req.query.filter.split(',');
+            for(var i = 0; i < filterArray.length; i++){
+                if(filters === undefined){
+                    filters = filterArray[i];
+                }else{
+                    filters += ' ' + filterArray[i];
+                }
+            }
+        }
+        var query = VideoModel.findById(req.params.id);
+        query.select(filters).exec(function(err, items){
             videos = items;
             if(!videos){
                 error = new Error('There is no Video with the given id');
@@ -166,7 +184,6 @@ videos.route('/:id')
     .patch(function(req,res,next) {
         var error = undefined;
         if (! req.body.id || req.body.id === req.params.id) {
-            console.log("req id und body id stimmen überein, gut gemacht Dude!");
             VideoModel.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, item){
                     if (!err) {
                         res.status(200).json(item);
@@ -177,7 +194,7 @@ videos.route('/:id')
                     }
                 });
             } else {
-            error = new Error('id dont equals id from body dude');
+            error = new Error('Given Parameter-ID doesnt match the ID in the body, dude');
             error.status = 400;
             next(error);
             }
@@ -226,7 +243,6 @@ videos.use(function(req, res, next){
  *          returns an array with legal (or default/break) values for the filter function
  */
 function checkQuery(query){
-    console.log('--------Query Check-------');
     var checkedQuery = {
         filter : undefined,
         limit : query.limit,
@@ -276,7 +292,6 @@ function checkQuery(query){
             checkedQuery.limit = -1;
         }
     }else {
-        console.log('default limit is set');
         checkedQuery.limit = 25;
     }
     
@@ -288,7 +303,6 @@ function checkQuery(query){
             checkedQuery.offset = -1;
         }
     }else{
-        console.log('default offset is set');
         checkedQuery.offset = 0;
     }
 
@@ -337,24 +351,11 @@ function checkQuery(query){
      */
     if( (checkedQuery.queryChecksum - checkedQuery.numberOfSpecialQuerys) > 0 ){
         checkedQuery.checkAttributes = false;
-        console.log("Ungültige Parameter im Query!");
-        console.log((checkedQuery.numberOfSpecialQuerys));
-        console.log((checkedQuery.queryChecksum-checkedQuery.numberOfSpecialQuerys));
-        console.log("___________________________________");
 
         // Need this for the case that there are keywords but no filter
         checkedQuery.filter = undefined;
     }
-
-
-    console.log('filter value:');
-    console.log(checkedQuery.filter);
-    console.log('limit is: ' + checkedQuery.limit);
-    console.log('offset is: ' + checkedQuery.offset);
-    console.log('query obj: ');
-    console.log(checkedQuery);
-    console.log('------Query Check done-----');
-    console.log('');
+    
 
     return checkedQuery;
 }
