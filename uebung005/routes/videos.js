@@ -37,6 +37,9 @@ videos.route('/')
         var videos = undefined;
         var filterArray = undefined;
         var filters = undefined;
+        var limit = parseInt(req.query.limit);
+        var offset = parseInt(req.query.offset);
+
         if(req.query.filter){
             filterArray = req.query.filter.split(',');
             for(var i = 0; i < filterArray.length; i++){
@@ -47,32 +50,32 @@ videos.route('/')
                 }
             }
         }
-        VideoModel.find({}, filters, function(err, items){
-            videos = items;
-            if(videos == undefined){
-                res.status(204).end();
-            } else {
-                if(req.query != undefined) {
-                    verify = checkQuery(req.query);
-                    if(verify.filter === 'bad' || verify.limit === -1 || verify.offset === -1 || verify.checkAttributes === false){
-                        error = new Error('At least one Query Attribute has an illegal value. Check the filter');
-                        error.status = 400;
-                        next(error);
-                    }else{
-                        var result = filter.filterQueryFunc(verify, videos);
-                        if(result.emptyCheck == true){
-                            error = new Error('No video with given parameters found');
-                            error.status = 404;
+        VideoModel.find({}, filters).skip(offset-1).limit(limit+offset).exec(function(err, items){
+                videos = items;
+                if(videos == undefined){
+                    res.status(204).end();
+                } else {
+                    if(req.query != undefined) {
+                        verify = checkQuery(req.query);
+                        if(verify.filter === 'bad' || verify.limit === -1 || verify.offset === -1 || verify.checkAttributes === false){
+                            error = new Error('At least one Query Attribute has an illegal value.');
+                            error.status = 400;
                             next(error);
-                        }else {
-                            res.status(200).json(result.videos);
+                        }else{
+                            var result = filter.filterQueryFunc(verify, videos);
+                            if(result.emptyCheck == true){
+                                error = new Error('No video with given parameters found or database is empty');
+                                error.status = 404;
+                                next(error);
+                            }else {
+                                res.status(200).json(result.videos);
+                            }
                         }
+                    }else{
+                        res.status(200).json(videos);
                     }
-                }else{
-                    res.status(200).json(videos);
                 }
-            }
-        });
+            });
     })
 
     .put(function (req,res,next) {
@@ -239,7 +242,7 @@ videos.use(function(req, res, next){
 /**
  * This function checks, if the queryparameters filter, limit and offset have legal values
  * @param query
- * @returns {{filter: (*|Array|filterFunc|string|NodeFilter), limit: (*|number|Number), offset: (*|number)}}
+ * @returns {{filter: (*|Array|string|NodeFilter), limit: (*|number|Number), offset: (*|number)}}
  *          returns an array with legal (or default/break) values for the filter function
  */
 function checkQuery(query){
@@ -267,7 +270,6 @@ function checkQuery(query){
      */
     if(query.filter != undefined){
         var filterArray = query.filter.split(',');
-        var dummyString = undefined;
         checkedQuery.numberOfSpecialQuerys += 1;
         for(var i = 0; i < filterArray.length; i++){
             if(!(filterArray[i] === 'id' || filterArray[i] === 'title' || filterArray[i] === 'description' ||filterArray[i] === 'src' || filterArray[i] === 'length' || filterArray[i] === 'timestamt' || filterArray[i] === 'playcount' || filterArray[i] === 'ranking')){
