@@ -21,46 +21,28 @@ var filter = {
 
         var searchedVideos = [];
         var filteredVideos = [];
-        console.log('------------------FILTER CLASS------------------');
-        console.log('Filtering: ');
-        console.log('');
-        console.log(videos);
-        console.log('');
-        console.log('by Filter-Attributes: ' + query.filter);
-        console.log('limit: ' + query.limit);
-        console.log('offset: ' + query.offset);
-        console.log('search-keywords: ' + keywords);
-
-
+        
         // First we search all the videos who match to the Keywords(for example description)
         // After that we cut the video JSON Objects with the filter
         // If there is no filter but keywords, we search but not filter the videos
 
         if(keywords.id != undefined || keywords.title != undefined || keywords.description != undefined || keywords.src != undefined || keywords.length != undefined || keywords.timestamp != undefined || keywords.playcount != undefined || keywords.ranking != undefined ) {
-            console.log("Searching Keywords");
-            console.log(keywords.ranking);
 
             for (var k = 0; k < videos.length && k < limit; k++) {
                 if (videos[k].id == keywords.id || videos[k].title == keywords.title || videos[k].description == keywords.description || videos[k].src == keywords.src || videos[k].length == keywords.length || videos[k].timestamp == keywords.timestamp || videos[k].playcount == keywords.playcount || videos[k].ranking == keywords.ranking) {
                     searchedVideos.push(videos[k]);
-                    console.log("found video");
                 }
-                console.log("searching..");
             }
         } else {
             // if there are no keywoards in the query
             searchedVideos = videos;
-            console.log("Zero Keywords");
-
         }
 
 
 
         // String splitten   Später Abfragen ob alle da
         if(query.filter != undefined ) {
-            // Videos um attribute kürzen
-
-            console.log('Array Keys: ' + Object.keys(searchedVideos));
+            // Videos um attribute kürzen;
 
             for (var i = 0; i < searchedVideos.length && i < limit; i++) {
                 var fIndex = i + offset;
@@ -68,13 +50,9 @@ var filter = {
                 if(fIndex < searchedVideos.length){
                     var newVideo = {};
                     if (query.filter.includes('title')) {
-                        console.log('-------------------' + number +'. TITLE------------------');
-                        console.log(searchedVideos[fIndex].title);
                         newVideo.title = searchedVideos[fIndex].title;
                     }
                     if (query.filter.includes('src')) {
-                        console.log('-------------------' + number + '. SOURCE------------------');
-                        console.log(searchedVideos[fIndex].src);
                         newVideo.src = searchedVideos[fIndex].src;
                     }
                     if (query.filter.includes('description')) {
@@ -116,10 +94,7 @@ var filter = {
         if(filteredVideos.length == 0){
             result.emptyCheck = true;
         }
-
-
-        console.log('-------------------RESULT-----------------');
-        console.log(result);
+        
         return result;
     }
 
