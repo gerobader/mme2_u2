@@ -175,7 +175,6 @@ videos.route('/:id')
                         error.status = 400;
                         next(error);
                     }
-                    next();
                 });
             } else {
             error = new Error('id dont equals id from body dude');
