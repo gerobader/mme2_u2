@@ -51,7 +51,7 @@ videos.route('/')
                 }
             }
         }
-        VideoModel.find({}, filters).skip(offset-1).limit(limit+offset).exec(function(err, items){
+        VideoModel.find(filters).skip(offset-1).limit(limit+offset).exec(function(err, items){
                 videos = items;
                 if(videos == undefined){
                     res.status(204).end();
@@ -111,7 +111,7 @@ videos.route('/:id')
         if(req.query.filter){
             filterArray = req.query.filter.split(',');
             for(var i = 0; i < filterArray.length; i++){
-                if(filters === undefined){
+                if(filters){
                     filters = filterArray[i];
                 }else{
                     filters += ' ' + filterArray[i];
