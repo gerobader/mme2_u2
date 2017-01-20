@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Übung 1</title>
+    <link rel="stylesheet" href="css/app.css">
+    <script src="js/app.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>Das hier ist der Headerbereich</h1>
+        </nav>
+    </header>
+
+    <aside class="boxshadow">
+        <h2>Der Seitenbereich</h2>
+        <ul class="list">
+            <li><a href="https://www.google.de/">Google</a></li>
+            <li><a href="https://www.youtube.com/?gl=DE&hl=de">Youtube</a></li>
+            <li><a href="https://www.facebook.com/">Facebook</a></li>
+            <li><a href="#footer">Footer</a></li>
+        </ul>
+    </aside>
+
+    <section class="boxshadow">
+        <h2>Der Hauptbereich</h2>
+        <hr>
+        <div class="videoSpace">
+            <video class="video">
+                <source src=videos/small.webm type=video/webm>
+            </video>
+            <p class="outputVideo output"></p><br>
+            <div class="clearfix"></div>
+            <button class="playPause">></button>
+            <button class="videoDur">Länge anzeigen</button>
+            <button class="restart"><-</button>
+            <button class="mute">Mute</button><br>
+        </div>
+
+        <div class="videoSpace">
+            <video class="video">
+                <source src=videos/small.ogv type=video/ogg>
+            </video>
+            <p class="outputVideo output"></p><br>
+            <div class="clearfix"></div>
+            <button class="playPause">></button>
+            <button class="videoDur">Länge anzeigen</button>
+            <button class="restart"><-</button>
+            <button class="mute">Mute</button><br>
+        </div>
+
+        <div class="videoSpace">
+            <video class="video">
+                <source src=videos/small.mp4 type=video/mp4>
+            </video>
+            <p class="outputVideo output"></p><br>
+            <div class="clearfix"></div>
+            <button class="playPause">></button>
+            <button class="videoDur">Länge anzeigen</button>
+            <button class="restart"><-</button>
+            <button class="mute">Mute</button><br>
+        </div>
+
+        <div class="videoSpace">
+            <video class="video">
+                <source src=videos/small.3gp type=video/3gp>
+                The 3gp datatype is not supported
+            </video>
+            <p class="outputVideo output"></p><br>
+            <div class="clearfix"></div>
+            <button class="playPause">></button>
+            <button class="videoDur">Länge anzeigen</button>
+            <button class="restart"><-</button>
+            <button class="mute">Mute</button><br>
+        </div>
+
+    </section>
+    <div class="clearfix"></div>
+
+    <footer>
+        <a id="footer">Hier ist der Footer</a>
+    </footer>
+
+</body>
+</html>
