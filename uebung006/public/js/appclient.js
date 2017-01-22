@@ -8,7 +8,8 @@ requirejs.config({
     paths: {
         jquery: './_lib/jquery-1.11.3',
         underscore: './_lib/underscore-1.8.3',
-        backbone: './_lib/backbone-1.2.3'
+        backbone: './_lib/backbone-1.2.3',
+        videomodel: './models/video'
     },
     shim: {
         underscore: {
@@ -22,8 +23,8 @@ requirejs.config({
 });
 
 // AMD conform require as provided by require.js
-require(['jquery','backbone'],
-        function($, Backbone) {
+require(['jquery','backbone', 'videomodel'],
+        function($, Backbone, VideoModel) {
 
     var AppRouter = Backbone.Router.extend({
         routes: {
@@ -31,7 +32,17 @@ require(['jquery','backbone'],
             '*whatever': 'main'
         },
         main: function(){
-            $('body').prepend('<h1>Video App</h1>');
+
+            var VideoCollection = new VideoModel.Collection();
+            console.log(VideoCollection);
+            VideoCollection.fetch({
+                success: function(){
+                    console.log(VideoCollection.length);
+                },
+                error: function(){
+                    console.log('fetch error');
+                }
+            });
         }
     });
 

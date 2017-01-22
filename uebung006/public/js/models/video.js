@@ -1,27 +1,35 @@
 define(["backbone", "underscore"], function(Backbone, _){
 
 var result = {};
-var VideoSchema = {
+var VideoModel = Backbone.Model.extend({
     urlRoot: '/videos',
-    idAttribute: "_id",
+    idAttribute: '_id',
     defaults: {
-        description : "",
-        playcount : 0,
-        ranking : 0
+        title: null,
+        src: null,
+        length: null,
+        description: '',
+        playcount: 0,
+        ranking: 0
     },
     initialize: function () {
     },
     validate: function(attr){
-        if(_.isEmpty(attr.title))
-            return "title not there";
-        if(_.isEmpty(attr.length))
-            return "no length";
-        if(_.isEmpty(attr.src))
-            return "no src";
+        if(!attr.title)
+            return "Missing videotitle";
+        if(!attr.src)
+            return "Missing videosource";
+        if(!attr.length)
+            return "Missing videolength";
     }
-};
+});
 
-var VideoModel = Backbone.Model.extend(VideoSchema);
+var VideoCollection = Backbone.Collection.extend({
+    model: VideoModel,
+    url: '/videos',
+    initialize: function() {
+    }
+});
 
 result.Model = VideoModel;
 result.Collection = VideoCollection;
