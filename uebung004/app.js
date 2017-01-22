@@ -32,7 +32,7 @@ var videos = require('./routes/videos');
 var app = express();
 
 // Middlewares *************************************************
-app.use(favicon(path.join(__dirname, 'public', 'images/faviconbeuth.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'img/faviconbeuth.ico')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 
