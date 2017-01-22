@@ -23,7 +23,7 @@ requirejs.config({
 
 // AMD conform require as provided by require.js
 require(['jquery','backbone'],
-        function($, Backbone, User, UserView) {
+        function($, Backbone) {
 
     var AppRouter = Backbone.Router.extend({
         routes: {
@@ -32,20 +32,6 @@ require(['jquery','backbone'],
         },
         main: function(){
             $('body').prepend('<h1>Video App</h1>');
-            // var user = new User.Model({_id : '57554efd6c5edc1f5c9a2778'});  // hard coded instead of login..
-            //
-            // var userView = new UserView({model: user});
-            // var that = this;
-            // user.fetch( {
-            //    error: function(model, response) {
-            //        console.error("no user fetched");
-            //        userView.render();
-            //    },
-            //     success: function(model, response) {
-            //        userView.render();
-            //         that.user = user;
-            //     }
-            // });
         }
     });
 
