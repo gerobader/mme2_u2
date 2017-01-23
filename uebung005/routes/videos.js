@@ -27,6 +27,7 @@ var videos = express.Router();
 //var internalKeys = {id: 'number', timestamp: 'number'};
 
 
+
 // routes **********************
 
 
@@ -101,6 +102,7 @@ videos.route('/')
 
 
 videos.route('/:id')
+    // GET
     .get(function(req, res, next) {
         var verify = undefined;
         var error = undefined;
@@ -141,7 +143,7 @@ videos.route('/:id')
             }
         });
     })
-    //TODO: find a way to check if the inputs are valid with the VideoModel || use findByIdAndUpdate
+    // PUT
     .put(function(req,res,next) {
         var error = undefined;
         if(req.params.id == req.body.id){
@@ -183,7 +185,7 @@ videos.route('/:id')
         }
 
     })
-
+// PATCH
     .patch(function(req,res,next) {
         var error = undefined;
         if (! req.body.id || req.body.id === req.params.id){
@@ -191,7 +193,7 @@ videos.route('/:id')
                     if (!err) {
                         res.status(200).json(item);
                     } else {
-                        error = new Error('Video validation failed. Check the video parameters bro.');
+                        error = new Error('Video validation failed. Check the video parameters.');
                         error.status = 400;
                         next(error);
                     }

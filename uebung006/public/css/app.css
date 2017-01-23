@@ -1,0 +1,123 @@
+body{
+    margin: 0;
+    font-family: sans-serif;
+}
+
+header{
+    text-align: center;
+    margin-bottom: 10px;
+    padding-top: 1%;
+    height: 70px;
+    background: dimgray;
+    color: white;
+    font-size: 20px;
+}
+
+/*padding + margin = 16%*/
+aside {
+    width: 14%;
+    float: left;
+    margin: 3% 5%;
+    padding: 2% 3%;
+}
+
+h2{
+    font-size: 1.2em;
+
+}
+
+section{
+    width: 55%;
+    float: left;
+    margin: 3% 5% 2% 0;
+    padding: 2% 5%;
+    text-align: center;
+}
+
+.clearfix{
+    clear: both;
+}
+
+hr{
+    width: 50%;
+    min-width: 250px;
+    margin-top: -10px;
+    margin-bottom: 40px;
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+footer{
+    text-align: center;
+    background: lightgrey;
+    height: 30px;
+    padding-top: 2%;
+}
+
+button{
+    margin: 10px 5px 20px 5px;
+}
+
+.video{
+    float: left;
+    width: 60%;
+    Padding: 1%;
+    box-shadow: inset 0 0 5px 0 rgba(0,0,0,0.75);
+}
+
+.videoSpace{
+    text-align: left;
+}
+
+.output{
+    margin-left: 2%;
+    float: left;
+    width: 30%;
+}
+
+.boxshadow{
+    -webkit-box-shadow: 0 0 22px 2px rgba(0,0,0,0.18);
+    -moz-box-shadow: 0 0 22px 2px rgba(0,0,0,0.18);
+    box-shadow: 0 0 22px 2px rgba(0,0,0,0.18);
+}
+
+@media(max-width: 1000px){
+    aside{
+        text-align: center;
+        float: none;
+        width: 84%;
+    }
+
+    .list{
+        list-style: none;
+        padding: 0;
+    }
+
+    .videoSpace{
+        text-align: center;
+    }
+
+    .video{
+        float: none;
+        width: 98%;
+    }
+
+    .output{
+        float: none;
+        width: auto;
+        margin-bottom: 0;
+    }
+
+    button{
+        margin-top: 0;
+    }
+
+    section{
+        text-align: center;
+        width: 80%;
+        float: none;
+        margin-left: 5%;
+    }
+}
