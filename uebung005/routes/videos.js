@@ -110,7 +110,7 @@ videos.route('/:id')
         if(req.query.filter){
             filterArray = req.query.filter.split(',');
             for(var i = 0; i < filterArray.length; i++){
-                if(filters){
+                if(filters === undefined){
                     filters = filterArray[i];
                 }else{
                     filters += ' ' + filterArray[i];
@@ -186,7 +186,7 @@ videos.route('/:id')
 
     .patch(function(req,res,next) {
         var error = undefined;
-        if (! req.body.id || req.body.id === req.params.id) {
+        if (! req.body.id || req.body.id === req.params.id){
             VideoModel.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, item){
                     if (!err) {
                         res.status(200).json(item);
