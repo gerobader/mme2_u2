@@ -26,7 +26,7 @@ var VideoModel = Backbone.Model.extend({
 
 var VideoCollection = Backbone.Collection.extend({
     model: VideoModel,
-    url: '/videos',
+    url: '/videos/',
     initialize: function() {
     }
 });

@@ -5,7 +5,6 @@
     <title>Übung 1</title>
     <link rel="stylesheet" href="css/app.css">
     <script data-main="js/appclient" src="js/require.js"></script>
-    <script src="js/app.js"></script>
 </head>
 <body>
     <header>
@@ -27,61 +26,25 @@
     <section class="boxshadow">
         <h2>Der Hauptbereich</h2>
         <hr>
-        <div class="videoSpace">
-            <video class="video">
-                <source src=videos/small.webm type=video/webm>
-            </video>
-            <p class="outputVideo output"></p><br>
-            <div class="clearfix"></div>
-            <button class="playPause">></button>
-            <button class="videoDur">Länge anzeigen</button>
-            <button class="restart"><-</button>
-            <button class="mute">Mute</button><br>
-        </div>
-
-        <div class="videoSpace">
-            <video class="video">
-                <source src=videos/small.ogv type=video/ogg>
-            </video>
-            <p class="outputVideo output"></p><br>
-            <div class="clearfix"></div>
-            <button class="playPause">></button>
-            <button class="videoDur">Länge anzeigen</button>
-            <button class="restart"><-</button>
-            <button class="mute">Mute</button><br>
-        </div>
-
-        <div class="videoSpace">
-            <video class="video">
-                <source src=videos/small.mp4 type=video/mp4>
-            </video>
-            <p class="outputVideo output"></p><br>
-            <div class="clearfix"></div>
-            <button class="playPause">></button>
-            <button class="videoDur">Länge anzeigen</button>
-            <button class="restart"><-</button>
-            <button class="mute">Mute</button><br>
-        </div>
-
-        <div class="videoSpace">
-            <video class="video">
-                <source src=videos/small.3gp type=video/3gp>
-                The 3gp datatype is not supported
-            </video>
-            <p class="outputVideo output"></p><br>
-            <div class="clearfix"></div>
-            <button class="playPause">></button>
-            <button class="videoDur">Länge anzeigen</button>
-            <button class="restart"><-</button>
-            <button class="mute">Mute</button><br>
-        </div>
-
+        <div id="videoSector"></div>
     </section>
     <div class="clearfix"></div>
 
     <footer>
         <a id="footer">Hier ist der Footer</a>
     </footer>
+    <script type="text/template" id="video-template">
+        <video class="video">
+            <source src="<%= src %>" type=video/mp4>
+            The mp4 datatype is not supported
+        </video>
+        <p class="outputVideo output"><%= playcount %></p><br>
+        <div class="clearfix"></div>
+        <button class="playPause">></button>
+        <button class="videoDur">Länge anzeigen</button>
+        <button class="restart"><-</button>
+        <button class="mute">Mute</button><br>
 
+    </script>
 </body>
 </html>
